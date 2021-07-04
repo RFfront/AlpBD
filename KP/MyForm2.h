@@ -11,6 +11,7 @@ namespace KP {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::Diagnostics;
 
 	/// <summary>
 	/// Сводка для MyForm2
@@ -113,6 +114,7 @@ namespace KP {
 			this->button4->TabIndex = 3;
 			this->button4->Text = L"Справка";
 			this->button4->UseVisualStyleBackColor = true;
+			this->button4->Click += gcnew System::EventHandler(this, &MyForm2::button4_Click);
 			// 
 			// MyForm2
 			// 
@@ -124,6 +126,7 @@ namespace KP {
 			this->Controls->Add(this->button3);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->button1);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"MyForm2";
 			this->Text = L"Альпинистский клуб";
 			this->Load += gcnew System::EventHandler(this, &MyForm2::MyForm2_Load);
@@ -138,18 +141,21 @@ namespace KP {
 		f2->Show();
 		f2->uplBD();
 	}
-private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) {
-	auto f3 = gcnew MyForm3();
-	f3->Show();
-	f3->uplBD();
-	f3->uplBDCustomers();
-	f3->uplBDTourName();
-	f3->uplBDStaff();
-}
-private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
-	auto f = gcnew MyForm();
-	f->Show();
-	f->uplBD();
-}
-};
+	private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) {
+		auto f3 = gcnew MyForm3();
+		f3->Show();
+		f3->uplBD();
+		f3->uplBDCustomers();
+		f3->uplBDTourName();
+		f3->uplBDStaff();
+	}
+	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
+		auto f = gcnew MyForm();
+		f->Show();
+		f->uplBD();
+	}
+	private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e) {
+		Process::Start("spr.chm");
+	}
+	};
 }

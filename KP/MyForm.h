@@ -25,6 +25,7 @@ namespace KP {
 		}
 		void uplBD()
 		{
+			dataGridView1->Rows->Clear();
 			//Строка подключение
 			String^ connectionString = "provider=Microsoft.Jet.OleDB.4.0;Data Source=Database5.mdb";
 			//Соединение с БД
@@ -69,16 +70,11 @@ namespace KP {
 		}
 	private: System::Windows::Forms::DataGridView^ dataGridView1;
 	protected:
-
-
-
-
 	private: System::Windows::Forms::Button^ button1;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ id;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ FIO;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Telephone;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Address;
-
 
 	protected:
 
@@ -98,12 +94,13 @@ namespace KP {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
-			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->id = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->FIO = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Telephone = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Address = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->button1 = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -119,16 +116,6 @@ namespace KP {
 			this->dataGridView1->Size = System::Drawing::Size(651, 215);
 			this->dataGridView1->TabIndex = 12;
 			this->dataGridView1->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MyForm::dataGridView1_CellContentClick_1);
-			// 
-			// button1
-			// 
-			this->button1->Location = System::Drawing::Point(371, 233);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(292, 23);
-			this->button1->TabIndex = 13;
-			this->button1->Text = L"Добавить выбранного пользователя";
-			this->button1->UseVisualStyleBackColor = true;
-			this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click_1);
 			// 
 			// id
 			// 
@@ -158,6 +145,16 @@ namespace KP {
 			this->Address->Name = L"Address";
 			this->Address->Width = 200;
 			// 
+			// button1
+			// 
+			this->button1->Location = System::Drawing::Point(371, 233);
+			this->button1->Name = L"button1";
+			this->button1->Size = System::Drawing::Size(292, 23);
+			this->button1->TabIndex = 13;
+			this->button1->Text = L"Добавить выбранного пользователя";
+			this->button1->UseVisualStyleBackColor = true;
+			this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click_1);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -167,6 +164,7 @@ namespace KP {
 			this->ClientSize = System::Drawing::Size(675, 268);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->dataGridView1);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->MaximizeBox = false;
 			this->MaximumSize = System::Drawing::Size(691, 307);
 			this->MinimumSize = System::Drawing::Size(691, 307);
@@ -183,7 +181,6 @@ namespace KP {
 	}
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 	}
-
 
 	private: System::Void label3_Click(System::Object^ sender, System::EventArgs^ e) {
 	}
@@ -240,7 +237,7 @@ namespace KP {
 
 		//Закрываем соединение
 		dbConnection->Close();
-
+		uplBD();
 	}
 	};
 }

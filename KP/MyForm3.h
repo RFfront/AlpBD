@@ -80,7 +80,6 @@ namespace KP {
 				while (dbReader->Read())
 				{
 					listBox1->Items->Add(dbReader[0]);
-					//dataGridView1->Rows->Add(dbReader[0], dbReader[1], dbReader[2], dbReader[3], dbReader[4]);
 				}
 			}
 			//Закрываем соединение
@@ -162,7 +161,7 @@ namespace KP {
 			//Открываем соединение
 			String^ data = userId.ToString() + "," + clothesid.ToString() + "," + staffId.ToString();
 			dbConnection->Open();
-			String^ query = "INSERT INTO Orders (userId, clothesid, staffId )VALUES (" + data + ")";
+			String^ query = "UPDATE INTO Orders (userId, clothesid, staffId )VALUES (" + data + ")";
 			//Команда
 			OleDbCommand^ dbComand = gcnew OleDbCommand(query, dbConnection);
 			//Считываем данные
@@ -208,6 +207,7 @@ namespace KP {
 
 
 
+
 	private:
 		/// <summary>
 		/// Обязательная переменная конструктора.
@@ -221,6 +221,7 @@ namespace KP {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm3::typeid));
 			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
 			this->id = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->userId = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
@@ -288,24 +289,24 @@ namespace KP {
 			this->listBox2->FormattingEnabled = true;
 			this->listBox2->Location = System::Drawing::Point(209, 263);
 			this->listBox2->Name = L"listBox2";
-			this->listBox2->Size = System::Drawing::Size(191, 186);
+			this->listBox2->Size = System::Drawing::Size(292, 186);
 			this->listBox2->TabIndex = 3;
 			// 
 			// listBox3
 			// 
 			this->listBox3->FormattingEnabled = true;
-			this->listBox3->Location = System::Drawing::Point(406, 263);
+			this->listBox3->Location = System::Drawing::Point(507, 263);
 			this->listBox3->Name = L"listBox3";
 			this->listBox3->Size = System::Drawing::Size(191, 186);
 			this->listBox3->TabIndex = 4;
 			// 
 			// button1
 			// 
-			this->button1->Location = System::Drawing::Point(603, 416);
+			this->button1->Location = System::Drawing::Point(704, 416);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(90, 33);
 			this->button1->TabIndex = 5;
-			this->button1->Text = L"button1";
+			this->button1->Text = L"Добавить";
 			this->button1->UseVisualStyleBackColor = true;
 			this->button1->Click += gcnew System::EventHandler(this, &MyForm3::button1_Click);
 			// 
@@ -313,14 +314,17 @@ namespace KP {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(192)), static_cast<System::Int32>(static_cast<System::Byte>(192)),
+				static_cast<System::Int32>(static_cast<System::Byte>(255)));
 			this->ClientSize = System::Drawing::Size(806, 461);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->listBox3);
 			this->Controls->Add(this->listBox2);
 			this->Controls->Add(this->listBox1);
 			this->Controls->Add(this->dataGridView1);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"MyForm3";
-			this->Text = L"Заказы";
+			this->Text = L"Заказы туров";
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			this->ResumeLayout(false);
 
@@ -328,7 +332,7 @@ namespace KP {
 #pragma endregion
 
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-		//listBox1->SelectedValue
+		//label1->Text = listBox1->SelectedValue->ToString();
 		if (listBox1->SelectedIndex != -1 || listBox2->SelectedIndex != -1 || listBox3->SelectedIndex != -1) {
 			AddOrder(listBox1->SelectedIndex + 1, listBox2->SelectedIndex + 1, listBox3->SelectedIndex + 1);
 			uplBD();

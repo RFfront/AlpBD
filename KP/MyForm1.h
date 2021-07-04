@@ -23,9 +23,11 @@ namespace KP {
 			//TODO: добавьте код конструктора
 			//
 		}
-		
+
 		void uplBD()
 		{
+			dataGridView1->Rows->Clear();
+
 			//Строка подключение
 			String^ connectionString = "provider=Microsoft.Jet.OleDB.4.0;Data Source=Database5.mdb";
 			//Соединение с БД
@@ -49,7 +51,7 @@ namespace KP {
 				//Заполняем таблицу
 				while (dbReader->Read())
 				{
-					dataGridView1->Rows->Add(dbReader["id"], dbReader["Typeofclothing"], dbReader["color"], dbReader["producer"], dbReader["quantity"], dbReader["price"]);
+					dataGridView1->Rows->Add(dbReader[0], dbReader[1], dbReader[2], dbReader[3], dbReader[4]);
 				}
 			}
 			//Закрываем соединение
@@ -57,7 +59,6 @@ namespace KP {
 			dbConnection->Close();
 
 		}
-		
 
 	protected:
 		/// <summary>
@@ -74,32 +75,13 @@ namespace KP {
 	protected:
 
 
-
-
-
-
-
-
-
-
 	private: System::Windows::Forms::DataGridView^ dataGridView1;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ id;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Typeofclothing;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ color;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ quantity;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ price;
-
-
-
-
-
-
-
-
-
-
-
-
+	private: System::Windows::Forms::Button^ button1;
 
 	private:
 		/// <summary>
@@ -114,12 +96,14 @@ namespace KP {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm1::typeid));
 			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
 			this->id = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Typeofclothing = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->color = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->quantity = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->price = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->button1 = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -132,8 +116,9 @@ namespace KP {
 			});
 			this->dataGridView1->Location = System::Drawing::Point(12, 21);
 			this->dataGridView1->Name = L"dataGridView1";
-			this->dataGridView1->Size = System::Drawing::Size(630, 233);
+			this->dataGridView1->Size = System::Drawing::Size(630, 222);
 			this->dataGridView1->TabIndex = 12;
+			this->dataGridView1->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MyForm1::dataGridView1_CellContentClick);
 			// 
 			// id
 			// 
@@ -146,7 +131,7 @@ namespace KP {
 			// 
 			this->Typeofclothing->HeaderText = L"Название снаряжения";
 			this->Typeofclothing->Name = L"Typeofclothing";
-			this->Typeofclothing->Width = 200;
+			this->Typeofclothing->Width = 300;
 			// 
 			// color
 			// 
@@ -166,13 +151,26 @@ namespace KP {
 			this->price->Name = L"price";
 			this->price->Width = 50;
 			// 
+			// button1
+			// 
+			this->button1->Location = System::Drawing::Point(386, 250);
+			this->button1->Name = L"button1";
+			this->button1->Size = System::Drawing::Size(256, 23);
+			this->button1->TabIndex = 13;
+			this->button1->Text = L"Добавить выбранного пользователя";
+			this->button1->UseVisualStyleBackColor = true;
+			this->button1->Click += gcnew System::EventHandler(this, &MyForm1::button1_Click_1);
+			// 
 			// MyForm1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->BackColor = System::Drawing::SystemColors::ButtonFace;
+			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(192)), static_cast<System::Int32>(static_cast<System::Byte>(192)),
+				static_cast<System::Int32>(static_cast<System::Byte>(255)));
 			this->ClientSize = System::Drawing::Size(667, 277);
+			this->Controls->Add(this->button1);
 			this->Controls->Add(this->dataGridView1);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"MyForm1";
 			this->Text = L"Снаряжение на складе";
 			this->Load += gcnew System::EventHandler(this, &MyForm1::MyForm1_Load);
@@ -206,8 +204,6 @@ namespace KP {
 		}
 		else
 		{
-
-
 			//Заполняем таблицу
 			while (dbReader->Read()) {
 				dataGridView1->Rows->Add(dbReader["id"], dbReader["Typeofclothing"], dbReader["color"], dbReader["producer"], dbReader["quantity"], dbReader["price"]);
@@ -218,6 +214,57 @@ namespace KP {
 		dbConnection->Close();
 
 
+	}
+	private: System::Void dataGridView1_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
+	}
+	private: System::Void button1_Click_1(System::Object^ sender, System::EventArgs^ e) {
+		//Выбор нужной строки для добавления
+		if (dataGridView1->SelectedRows->Count != 1)
+		{
+			MessageBox::Show("Выберите одну строку для добавления!", "Внимание!");
+			return;
+		}
+
+		//Узнаем индекс выбранной строки
+		int index = dataGridView1->SelectedRows[0]->Index;
+
+		//Проверяем данные
+		if (dataGridView1->Rows[index]->Cells[1]->Value == nullptr ||
+			dataGridView1->Rows[index]->Cells[2]->Value == nullptr ||
+			dataGridView1->Rows[index]->Cells[3]->Value == nullptr ||
+			dataGridView1->Rows[index]->Cells[4]->Value == nullptr
+			)
+		{
+			MessageBox::Show("Не все данные введены!", "Внимание!");
+			return;
+		}
+
+		//Считываем данные
+		String^ EquipmentName = dataGridView1->Rows[index]->Cells[1]->Value->ToString();
+		String^ color = dataGridView1->Rows[index]->Cells[2]->Value->ToString();
+		String^ quantity = dataGridView1->Rows[index]->Cells[3]->Value->ToString();
+		String^ price = dataGridView1->Rows[index]->Cells[4]->Value->ToString();
+
+		String^ connectionString = "provider=Microsoft.Jet.OleDB.4.0;Data Source=Database5.mdb";
+		//Соединение с БД
+		OleDbConnection^ dbConnection = gcnew OleDbConnection(connectionString);
+
+		//Выполняем запрос к БД
+		//Открываем соединение
+		dbConnection->Open();
+
+		String^ query = "INSERT INTO warehouse(EquipmentName, color, quantity,price)VALUES('" + EquipmentName + "','" + color + "','" + quantity + "','" + price + "')";
+		OleDbCommand^ dbComand = gcnew OleDbCommand(query, dbConnection);//команда
+
+		//Выполняем запрос
+		if (dbComand->ExecuteNonQuery() != 1)
+			MessageBox::Show("Ошибка выполнения запроса!", "Ошибка!");
+		else
+			MessageBox::Show("Данные добавлены!", "Готово!");
+
+		//Закрываем соединение
+		dbConnection->Close();
+		uplBD();
 	}
 	};
 }
