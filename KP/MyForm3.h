@@ -25,6 +25,8 @@ namespace KP {
 		}
 		void uplBD()
 		{
+			dataGridView1->Rows->Clear();
+
 			//Строка подключение
 			String^ connectionString = "provider=Microsoft.Jet.OleDB.4.0;Data Source=Database5.mdb";
 			//Соединение с БД
@@ -151,25 +153,91 @@ namespace KP {
 			dbConnection->Close();
 
 		}
-		void AddOrder(int userId, int clothesid, int staffId)
+		void AddOrder(System::String^ user, System::String^ TourName, System::String^ staff)
 		{
 			//Строка подключение
 			String^ connectionString = "provider=Microsoft.Jet.OleDB.4.0;Data Source=Database5.mdb";
 			//Соединение с БД
 			OleDbConnection^ dbConnection = gcnew OleDbConnection(connectionString);
+			String^ TourID;
+			String^ userId;
+			String^ staffId;
 			//Выполняем запрос к БД
 			//Открываем соединение
-			String^ data = userId.ToString() + "," + clothesid.ToString() + "," + staffId.ToString();
+
+
 			dbConnection->Open();
-			String^ query = "UPDATE INTO Orders (userId, clothesid, staffId )VALUES (" + data + ")";
 			//Команда
+			String^ query = "SELECT Tours.id FROM Tours WHERE(((Tours.TourName) = '" + TourName + "')) ";
 			OleDbCommand^ dbComand = gcnew OleDbCommand(query, dbConnection);
 			//Считываем данные
 			OleDbDataReader^ dbReader = dbComand->ExecuteReader();
 			//Проверяем данные
 
+			if (dbReader->HasRows == false)
+			{
+				MessageBox::Show("Ошибка считывания данных!", "Ошибка!");
+			}
+			else
+			{
+				//Заполняем таблицу
+				while (dbReader->Read())
+				{
+					TourID = dbReader[0]->ToString();
+				}
+			}
+
+			//MessageBox::Show(TourID, "Ошибка!");
+			query = "SELECT Customers.id FROM Customers WHERE(((Customers.FIO) = '" + user + "'))";
+			dbComand = gcnew OleDbCommand(query, dbConnection);
+			//Считываем данные
+			dbReader = dbComand->ExecuteReader();
+			//Проверяем данные
+			if (dbReader->HasRows == false)
+			{
+				MessageBox::Show("Ошибка считывания данных!", "Ошибка!");
+			}
+			else
+			{
+				//Заполняем таблицу
+				while (dbReader->Read())
+				{
+					userId = dbReader[0]->ToString();
+				}
+			}
+
+			query = "SELECT Staff.id FROM Staff WHERE(((Staff.FIO) = '" + staff + "')); ";
+			dbComand = gcnew OleDbCommand(query, dbConnection);
+			//Считываем данные
+			dbReader = dbComand->ExecuteReader();
+			//Проверяем данные
+			if (dbReader->HasRows == false)
+			{
+				MessageBox::Show("Ошибка считывания данных!", "Ошибка!");
+			}
+			else
+			{
+				//Заполняем таблицу
+				while (dbReader->Read())
+				{
+					staffId = dbReader[0]->ToString();
+				}
+			}
+
+			String^ data = userId + "," + TourID + "," + staffId;
+			query = "INSERT INTO TourOrders (userId, tourID, staffId )VALUES (" + data + ")";
+
+			dbComand = gcnew OleDbCommand(query, dbConnection);
+
+			//Выполняем запрос
+			if (dbComand->ExecuteNonQuery() != 1)
+				MessageBox::Show("Ошибка выполнения запроса!", "Ошибка!");
+			else
+				MessageBox::Show("Данные добавлены!", "Готово!");
+
 			//Закрываем соединение
 			dbReader->Close();
+
 			dbConnection->Close();
 
 		}
@@ -201,6 +269,7 @@ namespace KP {
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ clothesid;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ staffId;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ orderDate;
+
 
 
 
@@ -332,11 +401,20 @@ namespace KP {
 #pragma endregion
 
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-		//label1->Text = listBox1->SelectedValue->ToString();
-		if (listBox1->SelectedIndex != -1 || listBox2->SelectedIndex != -1 || listBox3->SelectedIndex != -1) {
-			AddOrder(listBox1->SelectedIndex + 1, listBox2->SelectedIndex + 1, listBox3->SelectedIndex + 1);
-			uplBD();
+
+		//Проверяем данные
+		if (listBox1->SelectedItem == nullptr ||
+			listBox2->SelectedItem == nullptr ||
+			listBox3->SelectedItem == nullptr)
+		{
+			MessageBox::Show("Не все данные выбраны!", "Внимание!");
+			return;
 		}
+
+		AddOrder(listBox1->SelectedItem->ToString(), listBox2->SelectedItem->ToString(), listBox3->SelectedItem->ToString());
+		uplBD();
+
+
 	}
 
 	};
